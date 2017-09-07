@@ -28,6 +28,22 @@ view: bq_block_group_facts {
     value_format_name: decimal_2
   }
 
+  # Income Measure
+  measure: aggregate_income {
+    hidden: yes
+    type: sum
+    group_label: "Households"
+    sql: ${TABLE}.aggregate_income ;;
+  }
+
+  measure: avg_income_house {
+    type: number
+    group_label: "Households"
+    label: "Average Income per Household"
+    sql: ${aggregate_income}/NULLIF(${housing_units}, 0) ;;
+    value_format_name: usd_0
+  }
+
   # Sex Measures
   measure: female_population {
     type: sum
