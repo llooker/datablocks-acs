@@ -1,19 +1,17 @@
-view: bq_zcta_distances {
+view: rs_zcta_distances {
 
   derived_table: {
     sql: SELECT *
-          FROM
-        `looker-datablocks.acs_fast_facts.zcta_distances_*`
+        FROM
+          datablocks_spectrum.zcta_distances
         WHERE
           zip1 = {% parameter zcta_distances.zip1 %}
-          AND _TABLE_SUFFIX = SUBSTR( {% parameter zcta_distances.zip1 %}, 0, 1)
         UNION ALL
           SELECT
             {% parameter zcta_distances.zip1 %} as zip1,
             {% parameter zcta_distances.zip1 %} as zip2,
             0
           ;;
-
     }
 
     dimension: mi_to_zcta5 {

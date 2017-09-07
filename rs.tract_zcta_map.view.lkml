@@ -1,13 +1,15 @@
+explore: rs_tract_zcta_map {}
 
-view: bq_tract_zcta_map {
+view: rs_tract_zcta_map {
   label: "Geography"
   derived_table: {
     sql:
       SELECT geoid, ZCTA5  FROM
       (select *,  ROW_NUMBER() OVER (PARTITION BY GEOID ORDER BY ZPOPPCT DESC) row_num
-      from `looker-datablocks.acs_fast_facts.zcta_to_tract_w_state`)
+      from datablocks_spectrum.zcta_to_tract_w_state)
       WHERE row_num = 1;;
     persist_for: "10000 hours"
+    distribution_style: all
   }
   view_label: "Geography"
   dimension: geoid11 {sql: ${TABLE}.geoid;; hidden:yes}
