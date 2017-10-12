@@ -2,7 +2,9 @@
 
 Use the following DDL statements as a reference and starting point for uploading our datasets into your own DB.
 
-Note: *Our DDL statments follow redshift syntax. You may need to adjust data types and other fields as necessary for your dialect.*
+Note: *Our DDL statments follow Amazon Redshift Spectrum syntax. You may need to adjust data types and other fields as necessary for your dialect.*
+For Redshift you may want to reference the create/copy syntax from here: http://docs.aws.amazon.com/redshift/latest/dg/r_COPY.html
+
 
 ```
 CREATE external TABLE zcta_distances(
@@ -56,7 +58,7 @@ location 's3://looker-datablocks/acs_fast_facts/zcta_to_tract_w_state/';
 
 ```
 CREATE external TABLE fast_facts(
-   logrecno_bg_map_block_group INTEGER PRIMARY KEY
+   logrecno_bg_map_block_group VARCHAR(12) PRIMARY KEY
   ,total_population            INTEGER
   ,housing_units               INTEGER
   ,female                      INTEGER
