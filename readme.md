@@ -4,7 +4,9 @@ Use the following DDL statements as a *reference and starting point* for uploadi
 
 Note: *Our DDL statments follow Amazon Redshift syntax. You may need to adjust data types and other fields as necessary for your dialect.*
 
-###Table with schema
+[(jump)](#datablocks-acs-redshift) Working with Redshift? Refer to our steps here. 
+
+### Table with Schema
 
 ```
 CREATE TABLE zcta_distances(
@@ -228,7 +230,7 @@ You can copy the policy directly from here:
 
 ### Step 2: Create Tables in Redshift
 
-Run the following [`create table`](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html) commands in Redshift.
+Run the following [`create table`](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html) commands in Redshift. Refer above to the full list of tables that you may need to define. 
 
 ```
 CREATE TABLE fast_facts(
@@ -253,7 +255,7 @@ CREATE TABLE fast_facts(
 
 ### Step 3: Copy Data to Redshift from Looker's S3 Bucket
 
-Run the following [`copy`](http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-source-s3.html) commands in Redshift.
+Run the following [`copy`](http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-source-s3.html) commands in Redshift. Refer above to the full list of copy commands to be added.
 **Note:** _you will need to add your aws_access_key_id and aws_secret_access_key from step 1 into each of the statements_
 
 ```
