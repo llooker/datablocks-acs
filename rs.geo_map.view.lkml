@@ -5,50 +5,55 @@ view: rs_logrecno_bg_map {
       SELECT
         UPPER(stusab) as stusab,
         logrecno,
-        CONCAT(UPPER(stusab), CAST(logrecno AS STRING)) as row_id,
+        CONCAT(UPPER(stusab), logrecno::varchar) as row_id,
         sumlevel,
         state as state_fips_code,
         county as county_fips_code,
         tract,
         blkgrp,
-        SUBSTR(geo.geoid, 8, 11) as geoid11,
+        CASE WHEN SUBSTRING(SUBSTRING(geo.geoid, 8, 11),1,1) = 0 THEN SUBSTRING(geo.geoid, 9, 10) ELSE SUBSTRING(geo.geoid, 8, 11) END  AS  geoid11, --SUBSTRING(geo.geoid, 8, 11) as geoid11,
         geo.geoid,
-        CASE
+        trim(' ' from CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, [^,]*, ([^,]*)')
+          THEN SPLIT_PART(name, ',', 3)
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, [^,]*, [^,]*, ([^,]*)')
-        END as state_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 4)
+        END) as state_name,
+        trim(' ' from CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, ([^,]*), [^,]*')
+          THEN SPLIT_PART(name, ',', 2)
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, [^,]*, ([^,]*), [^,]*')
-        END as county_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 3)
+        END) as county_name,
+        name,
+        trim(' ' from CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_EXTRACT(name, r'^([^,]*), [^,]*, [^,]*')
+          THEN SPLIT_PART(name, ',', 1)
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, ([^,]*), [^,]*, [^,]*')
-        END as tract_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 2)
+        END) as tract_name,
+        trim(' ' from CASE
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^([^,]*), [^,]*, [^,]*, [^,]*')
-        END as block_group_name,
+          THEN SPLIT_PART(name, ',', 1)
+        END) as block_group_name,
         CASE WHEN geo.SUMLEVEL = '150' THEN bg.INTPTLAT END as latitude,
         CASE WHEN geo.SUMLEVEL = '150' THEN bg.INTPTLON END as longitude,
         SUM(COALESCE(bg.ALAND, tr.ALAND) * 0.000000386102159) AS square_miles_land,
         SUM(COALESCE(bg.AWATER, tr.AWATER) * .000000386102159) AS square_miles_water
       FROM
-        datablocks_spectrum.geo_2015 as geo
-      LEFT JOIN datablocks_spectrum.block_group_attribs as bg on (SUBSTR(geo.GEOID, 8, 12) = bg.geoid AND geo.SUMLEVEL = '150')
-      LEFT JOIN datablocks_spectrum.block_group_attribs as tr on (SUBSTR(geo.GEOID, 8, 11) = SUBSTR(tr.geoid, 1, 11) AND geo.SUMLEVEL = '140')
+        public.geo2015 as geo
+      LEFT JOIN public.block_group_attribs as bg on (SUBSTRING(geo.GEOID, 8, 12) = bg.geoid AND geo.SUMLEVEL = '150')
+      LEFT JOIN public.block_group_attribs as tr on (SUBSTRING(geo.GEOID, 8, 11) = SUBSTRING(tr.geoid, 1, 11) AND geo.SUMLEVEL = '140')
       WHERE
-        sumlevel in ('140', '150')
-      GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ;;
+        sumlevel in ('140','150')
+      GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ;;
     persist_for: "10000 hours"
     distribution_style: all
-  }
+    }
+
+
+
+
   dimension: row_id {sql: ${TABLE}.row_id;;
     primary_key:yes
     hidden: yes
