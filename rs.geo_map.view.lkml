@@ -40,9 +40,9 @@ view: rs_logrecno_bg_map {
         SUM(COALESCE(bg.ALAND, tr.ALAND) * 0.000000386102159) AS square_miles_land,
         SUM(COALESCE(bg.AWATER, tr.AWATER) * .000000386102159) AS square_miles_water
       FROM
-        datablocks_spectrum.geo_2015 as geo
-      LEFT JOIN datablocks_spectrum.block_group_attribs as bg on (SUBSTR(geo.GEOID, 8, 12) = bg.geoid AND geo.SUMLEVEL = '150')
-      LEFT JOIN datablocks_spectrum.block_group_attribs as tr on (SUBSTR(geo.GEOID, 8, 11) = SUBSTR(tr.geoid, 1, 11) AND geo.SUMLEVEL = '140')
+        xplenty.geo_2015 as geo
+      LEFT JOIN xplenty.block_group_attribs as bg on (SUBSTR(geo.GEOID, 8, 12) = bg.geoid AND geo.SUMLEVEL = '150')
+      LEFT JOIN xplenty.block_group_attribs as tr on (SUBSTR(geo.GEOID, 8, 11) = SUBSTR(tr.geoid, 1, 11) AND geo.SUMLEVEL = '140')
       WHERE
         sumlevel in ('140', '150')
       GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ;;
