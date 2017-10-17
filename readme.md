@@ -4,7 +4,7 @@ Use the following DDL statements as a *reference and starting point* for uploadi
 
 Note: *Our DDL statments follow Amazon Redshift syntax. You may need to adjust data types and other fields as necessary for your dialect.*
 
-[(jump)](#datablocks-acs for redshift) Working with Redshift? Refer to our steps here. 
+[(jump)](#datablocks-acs-redshift) Working with Redshift? Refer to our steps here. 
 
 ### Table with Schema
 
@@ -180,7 +180,7 @@ CSV;
 
 
 
-# datablocks-acs for redshift
+# datablocks-acs-redshift
 
 These instructions are for uploading the ACS dataset into your Redshift database. Note: _if you already have an AWS IAM user with the proper policy you may skip step 1._
 
