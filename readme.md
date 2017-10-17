@@ -4,7 +4,7 @@ Use the following DDL statements as a *reference and starting point* for uploadi
 
 Note: *Our DDL statments follow Amazon Redshift syntax. You may need to adjust data types and other fields as necessary for your dialect.*
 
-[(jump)](#datablocks-acs-redshift) Working with Redshift? Refer to our steps here. 
+[(jump)](#datablocks-acs for redshift) Working with Redshift? Refer to our steps here. 
 
 ### Table with Schema
 
