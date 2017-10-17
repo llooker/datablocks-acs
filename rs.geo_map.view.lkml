@@ -5,50 +5,56 @@ view: rs_logrecno_bg_map {
       SELECT
         UPPER(stusab) as stusab,
         logrecno,
-        CONCAT(UPPER(stusab), CAST(logrecno AS STRING)) as row_id,
+        (UPPER(stusab) || logrecno::varchar) as row_id,
+        -- edited LOOKML - originally was 'concat'
         sumlevel,
         state as state_fips_code,
         county as county_fips_code,
         tract,
         blkgrp,
-        SUBSTR(geo.geoid, 8, 11) as geoid11,
+        CASE WHEN SUBSTRING(SUBSTRING(geo.geoid, 8, 11),1,1) = 0 THEN SUBSTRING(geo.geoid, 9, 10) ELSE SUBSTRING(geo.geoid, 8, 11) END  AS  geoid11, --SUBSTRING(geo.geoid, 8, 11) as geoid11,
         geo.geoid,
-        CASE
+        trim(' ' from CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, [^,]*, ([^,]*)')
+          THEN SPLIT_PART(name, ',', 3)
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, [^,]*, [^,]*, ([^,]*)')
-        END as state_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 4)
+        END) as state_name,
+        trim(' ' from CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, ([^,]*), [^,]*')
+          THEN SPLIT_PART(name, ',', 2)
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, [^,]*, ([^,]*), [^,]*')
-        END as county_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 3)
+        END) as county_name,
+        name,
+        trim(' ' from CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_EXTRACT(name, r'^([^,]*), [^,]*, [^,]*')
+          THEN SPLIT_PART(name, ',', 1)
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^[^,]*, ([^,]*), [^,]*, [^,]*')
-        END as tract_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 2)
+        END) as tract_name,
+        trim(' ' from CASE
           WHEN sumlevel = '150'
-          THEN REGEXP_EXTRACT(name, r'^([^,]*), [^,]*, [^,]*, [^,]*')
-        END as block_group_name,
+          THEN SPLIT_PART(name, ',', 1)
+        END) as block_group_name,
         CASE WHEN geo.SUMLEVEL = '150' THEN bg.INTPTLAT END as latitude,
         CASE WHEN geo.SUMLEVEL = '150' THEN bg.INTPTLON END as longitude,
         SUM(COALESCE(bg.ALAND, tr.ALAND) * 0.000000386102159) AS square_miles_land,
         SUM(COALESCE(bg.AWATER, tr.AWATER) * .000000386102159) AS square_miles_water
       FROM
-        xplenty.geo_2015 as geo
-      LEFT JOIN xplenty.block_group_attribs as bg on (SUBSTR(geo.GEOID, 8, 12) = bg.geoid AND geo.SUMLEVEL = '150')
-      LEFT JOIN xplenty.block_group_attribs as tr on (SUBSTR(geo.GEOID, 8, 11) = SUBSTR(tr.geoid, 1, 11) AND geo.SUMLEVEL = '140')
+        xplenty.geo2015 as geo
+      LEFT JOIN xplenty.block_group_attribs as bg on (SUBSTRING(geo.GEOID, 8, 12) = bg.geoid AND geo.SUMLEVEL = '150')
+      LEFT JOIN xplenty.block_group_attribs as tr on (SUBSTRING(geo.GEOID, 8, 11) = SUBSTRING(tr.geoid, 1, 11) AND geo.SUMLEVEL = '140')
       WHERE
-        sumlevel in ('140', '150')
-      GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ;;
+        sumlevel in ('140','150')
+      GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ;;
     persist_for: "10000 hours"
     distribution_style: all
   }
+
+
+
+
   dimension: row_id {sql: ${TABLE}.row_id;;
     primary_key:yes
     hidden: yes
@@ -100,7 +106,10 @@ view: rs_logrecno_bg_map {
   dimension: county {
     group_label: "County"
     label: "County FIPS Code"
-    sql: CONCAT(${state}, ${TABLE}.county_fips_code);;
+    sql: (${state} || ${TABLE}.county_fips_code)
+            -- edited LOOKML - originally was 'concat'
+    ;;
+
     map_layer_name: us_counties_fips
     drill_fields: [tract, block_group]
     suggest_persist_for: "120 hours"
@@ -108,7 +117,9 @@ view: rs_logrecno_bg_map {
 
   dimension: county_name {
     group_label: "County"
-    sql: CONCAT(${TABLE}.county_name, ', ', ${state_name});;
+    sql: (${TABLE}.county_name || ', ' || ${state_name})
+            -- edited LOOKML - originally was 'concat'
+    ;;
     link: {
       url: "https://maps.google.com?q={{value}}"
       label: "Google Maps"
@@ -133,7 +144,9 @@ view: rs_logrecno_bg_map {
   }
 
   dimension: tract_name {
-    sql: CONCAT(${TABLE}.tract_name, ', ', ${county_name});;
+    sql: ${TABLE}.tract_name || ', ' || ${county_name}
+            -- edited LOOKML - originally was 'concat'
+    ;;
     group_label: "Tract"
     link: {
       url: "https://google.com?q={{value}}"
@@ -151,7 +164,7 @@ view: rs_logrecno_bg_map {
   # Block Group
 
   dimension: block_group {
-    sql: SUBSTR(${TABLE}.geoid, 8, 12);;
+    sql: SUBSTRING(${TABLE}.geoid, 8, 12);;
     group_label: "Block Group"
     label: "Block Group Geo Code"
     map_layer_name: block_group
@@ -163,7 +176,9 @@ view: rs_logrecno_bg_map {
   }
 
   dimension: block_group_name {
-    sql: CONCAT(${TABLE}.block_group_name, ', ', ${tract_name}) ;;
+    sql: (${TABLE}.block_group_name || ', ' || ${tract_name})
+            -- edited LOOKML - originally was 'concat'
+;;
     group_label: "Block Group"
     suggest_persist_for: "120 hours"
   }

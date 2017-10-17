@@ -1,4 +1,6 @@
 include: "rs.*.view.lkml"
+label: "rs_demo_data"
+connection: "redshift"
 
 explore: fast_facts {
   from: rs_logrecno_bg_map
@@ -23,3 +25,6 @@ explore: fast_facts {
     required_joins: [tract_zcta_map]
   }
 }
+
+
+explore: rs_logrecno_bg_map { }

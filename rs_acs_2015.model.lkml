@@ -1,3 +1,3 @@
 connection: "redshift"
 
-include: "rs.explore"
+#include: "rs.explore"

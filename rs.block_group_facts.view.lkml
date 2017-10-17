@@ -1,6 +1,6 @@
 view: rs_block_group_facts {
-  sql_table_name: xplenty.block_group_attribs ;;
-  #sql_table_name: datablocks_spectrum.fast_facts ;;
+  label: "Fast Facts"
+  sql_table_name: xplenty.fast_facts ;;
 
   dimension: logrecno_bg_map_block_group {
     hidden: yes
@@ -163,7 +163,7 @@ view: rs_block_group_facts {
     type: number
     sql: ${hispanic_or_latino}/NULLIF(${total_population}, 0) ;;
     group_label: "Hispanic/Latino"
-    value_format_name: percent_2
+    value_format_name: percent_4
   }
   measure: pct_non_hispanic_or_latino {
     label: "Non-Hispanic, Non-Latino % of Population (Any Race)"

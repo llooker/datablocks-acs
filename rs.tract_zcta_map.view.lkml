@@ -14,7 +14,7 @@ view: rs_tract_zcta_map {
   view_label: "Geography"
   dimension: geoid11 {sql: ${TABLE}.geoid;; hidden:yes}
   dimension: ZCTA5 {
-    sql: LPAD(CAST(${TABLE}.ZCTA5 as STRING), 5, '0');;
+    sql: LPAD(CAST(${TABLE}.ZCTA5 as varchar), 5, '0');;
     type: zipcode
     label: "ZIP (ZCTA)"
   }
