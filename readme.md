@@ -1,10 +1,18 @@
+# Get Started
+
+Check out our [**Blocks Directory**](https://looker.com/platform/blocks/directory#data) for a full list of data blocks and use cases
+
+[**Start Modeling**](https://discourse.looker.com/t/data-block-data-block-setup-instructions-and-everything-in-between/5949) by reading through this discourse post.
+
+
+
 # DDL Statements
 
 Use the following DDL statements as a *reference and starting point* for uploading our datasets into your own DB.
 
 Note: *Our DDL statments follow Amazon Redshift syntax. You may need to adjust data types and other fields as necessary for your dialect.*
 
-[(jump)](#datablocks-acs-redshift) **Working with Redshift? Refer to our steps below.** 
+[(jump)](#datablocks-acs-redshift) **Working with Redshift? Refer to our steps below.**
 
 ### Schema
 
@@ -141,35 +149,35 @@ CREATE TABLE block_group_attribs(
 
 ```
 COPY zcta_distances
-FROM 's3://looker-datablocks/acs_fast_facts/zcta_distances/' 
+FROM 's3://looker-datablocks/acs_fast_facts/zcta_distances/'
 CREDENTIALS 'aws_access_key_id=<aws_access_key_id>;aws_secret_access_key=<aws_secret_access_key>'  -- replace with access key and secret key from step 1
 REGION 'us-east-1'
 IGNOREHEADER as 1
 CSV;
 
 COPY zcta_to_tract_w_state
-FROM 's3://looker-datablocks/acs_fast_facts/zcta_to_tract_w_state/' 
+FROM 's3://looker-datablocks/acs_fast_facts/zcta_to_tract_w_state/'
 CREDENTIALS 'aws_access_key_id=<aws_access_key_id>;aws_secret_access_key=<aws_secret_access_key>'  -- replace with access key and secret key from step 1
 REGION 'us-east-1'
 IGNOREHEADER as 1
 CSV;
 
 COPY fast_facts
-FROM 's3://looker-datablocks/acs_fast_facts/fast_facts/' 
+FROM 's3://looker-datablocks/acs_fast_facts/fast_facts/'
 CREDENTIALS 'aws_access_key_id=<aws_access_key_id>;aws_secret_access_key=<aws_secret_access_key>'  -- replace with access key and secret key from step 1
 REGION 'us-east-1'
 IGNOREHEADER as 1
 CSV;
 
 COPY geo2015
-FROM 's3://looker-datablocks/acs_fast_facts/geo_2015/' 
+FROM 's3://looker-datablocks/acs_fast_facts/geo_2015/'
 CREDENTIALS 'aws_access_key_id=<aws_access_key_id>;aws_secret_access_key=<aws_secret_access_key>'  -- replace with access key and secret key from step 1
 REGION 'us-east-1'
 IGNOREHEADER as 1
 CSV;
 
 COPY block_group_attribs
-FROM 's3://looker-datablocks/acs_fast_facts/block_group_attribs/' 
+FROM 's3://looker-datablocks/acs_fast_facts/block_group_attribs/'
 CREDENTIALS 'aws_access_key_id=<aws_access_key_id>;aws_secret_access_key=<aws_secret_access_key>'  -- replace with access key and secret key from step 1
 REGION 'us-east-1'
 IGNOREHEADER as 1
@@ -179,13 +187,9 @@ CSV;
 
 
 
-
-
-
-
 # datablocks-acs-redshift
 
-These instructions are for uploading the ACS dataset into your Redshift database. Note: _if you already have an AWS IAM user with the proper policy you may skip step 1._
+Using Redshift? These instructions are for uploading the ACS dataset into your Redshift database. Note: _if you already have an AWS IAM user with the proper policy you may skip step 1._
 
 ### Overall Steps:
 1. [(jump)](#step-1-add-policy-to-iam-user-and-get-access-key) In your AWS console, apply our policy to your IAM user and grab the IAM access key ID and secret access key (this will be used in the authorization/credentials piece of the [`copy`](http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-source-s3.html) command in step 3)
@@ -197,15 +201,15 @@ ________________________________________________________________________________
 
 ### Step 1: Add Policy to IAM User and Get Access Key
 
-If you don't already have an IAM user with an access key and secret access key, you will need to create one in the AWS console. 
+If you don't already have an IAM user with an access key and secret access key, you will need to create one in the AWS console.
 
 ![iam](aws_add_user.png)
 
-Once the user is created, you will be provided with an Access Key ID and Secret Access Key. Write these down for later - the secret key will be shown only once. More information on access keys [here](http://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys). 
+Once the user is created, you will be provided with an Access Key ID and Secret Access Key. Write these down for later - the secret key will be shown only once. More information on access keys [here](http://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys).
 
 ![iam](aws_get_access_key.png)
 
-Next you will need to add our policy to your IAM user to allow the user to copy data from the Looker S3 bucket. 
+Next you will need to add our policy to your IAM user to allow the user to copy data from the Looker S3 bucket.
 You can copy the policy directly from here:
 ```
 {
@@ -233,7 +237,7 @@ You can copy the policy directly from here:
 
 ### Step 2: Create Tables in Redshift
 
-Run the following [`create table`](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html) commands in Redshift. Refer above to the full list of tables that you may need to define. 
+Run the following [`create table`](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html) commands in Redshift. Refer above to the full list of tables that you may need to define.
 
 ```
 CREATE TABLE fast_facts(
@@ -263,7 +267,7 @@ Run the following [`copy`](http://docs.aws.amazon.com/redshift/latest/dg/copy-pa
 
 ```
 COPY fast_facts
-FROM 's3://looker-datablocks/acs_fast_facts/fast_facts/' 
+FROM 's3://looker-datablocks/acs_fast_facts/fast_facts/'
 CREDENTIALS 'aws_access_key_id=<aws_access_key_id>;aws_secret_access_key=<aws_secret_access_key>'  -- replace with access key and secret key from step 1
 REGION 'us-east-1'
 IGNOREHEADER as 1
@@ -281,6 +285,3 @@ CSV;
 
 Now you're ready to explore ACS data and combine with your other datasets!
 ![looker](looker_acs.png)
-
-
-
