@@ -1,5 +1,3 @@
-explore: rs_tract_zcta_map {}
-
 view: rs_tract_zcta_map {
   label: "Geography"
   derived_table: {
