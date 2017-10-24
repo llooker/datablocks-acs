@@ -211,6 +211,7 @@ Once the user is created, you will be provided with an Access Key ID and Secret 
 
 Next you will need to add our policy to your IAM user to allow the user to copy data from the Looker S3 bucket.
 You can copy the policy directly from here:
+
 ```
 {
     "Version": "2012-10-17",
