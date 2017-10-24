@@ -1,4 +1,3 @@
-explore: sf_logrecno_bg_map {}
 view: sf_logrecno_bg_map {
   label: "Geography"
   derived_table: {
