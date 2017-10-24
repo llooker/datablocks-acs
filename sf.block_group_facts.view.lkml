@@ -2,6 +2,7 @@ view: sf_block_group_facts {
   sql_table_name: ACS.FAST_FACTS ;;
 
   dimension: logrecno_bg_map_block_group {
+    hidden: yes
     type: string
     sql: ${TABLE}.LOGRECNO_BG_MAP_BLOCK_GROUP ;;
   }
