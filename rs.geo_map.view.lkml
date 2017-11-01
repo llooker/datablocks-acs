@@ -156,7 +156,9 @@ view: rs_logrecno_bg_map {
     # Block Group
 
     dimension: block_group {
-      sql: SUBSTRING(${TABLE}.geoid, 8, 12);;
+      type: number
+      sql: SUBSTRING(${TABLE}.geoid, 8, 12)::bigint ;;
+      value_format_name: id
       group_label: "Block Group"
       label: "Block Group Geo Code"
       map_layer_name: block_group
@@ -165,7 +167,7 @@ view: rs_logrecno_bg_map {
         label: "Google"
       }
       suggest_persist_for: "120 hours"
-    }
+  }
 
     dimension: block_group_name {
       sql: CONCAT(${TABLE}.block_group_name, ', ', ${tract_name}) ;;
