@@ -5,7 +5,7 @@ view: rs_logrecno_bg_map {
       SELECT
         UPPER(stusab) as stusab,
         logrecno,
-        CONCAT(UPPER(stusab), logrecno::varchar) as row_id,
+        UPPER(stusab) || logrecno::varchar as row_id,
         sumlevel,
         state as state_fips_code,
         county as county_fips_code,
@@ -105,7 +105,7 @@ view: rs_logrecno_bg_map {
     dimension: county {
       group_label: "County"
       label: "County FIPS Code"
-      sql: CONCAT(${state}, ${TABLE}.county_fips_code);;
+      sql: ${state} || ${TABLE}.county_fips_code;;
       map_layer_name: us_counties_fips
       drill_fields: [tract, block_group]
       suggest_persist_for: "120 hours"
@@ -113,7 +113,7 @@ view: rs_logrecno_bg_map {
 
     dimension: county_name {
       group_label: "County"
-      sql: CONCAT(${TABLE}.county_name, ', ', ${state_name});;
+      sql: ${TABLE}.county_name || ', ' || ${state_name};;
       link: {
         url: "https://maps.google.com?q={{value}}"
         label: "Google Maps"
@@ -138,7 +138,7 @@ view: rs_logrecno_bg_map {
     }
 
     dimension: tract_name {
-      sql: CONCAT(${TABLE}.tract_name, ', ', ${county_name});;
+      sql: ${TABLE}.tract_name || ', ' || ${county_name};;
       group_label: "Tract"
       link: {
         url: "https://google.com?q={{value}}"
@@ -170,7 +170,7 @@ view: rs_logrecno_bg_map {
   }
 
     dimension: block_group_name {
-      sql: CONCAT(${TABLE}.block_group_name, ', ', ${tract_name}) ;;
+      sql: ${TABLE}.block_group_name || ', ' || ${tract_name} ;;
       group_label: "Block Group"
       suggest_persist_for: "120 hours"
     }
