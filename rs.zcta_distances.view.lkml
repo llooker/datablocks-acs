@@ -5,11 +5,11 @@ view: rs_zcta_distances {
         FROM
           datablocks_spectrum.zcta_distances
         WHERE
-          zip1 = {% parameter zcta_distances.zip1 %}
+          zip1 = LPAD(CAST({% parameter zcta_distances.zip1 %} AS VARCHAR), 5, '0')
         UNION ALL
           SELECT
-            {% parameter zcta_distances.zip1 %} as zip1,
-            {% parameter zcta_distances.zip1 %} as zip2,
+            LPAD(CAST({% parameter zcta_distances.zip1 %} AS VARCHAR), 5, '0') as zip1,
+            LPAD(CAST({% parameter zcta_distances.zip1 %} AS VARCHAR), 5, '0') as zip2,
             0
           ;;
     }
@@ -28,7 +28,7 @@ view: rs_zcta_distances {
       view_label: "Geography"
       group_label: "ZIP Radii"
       type: zipcode
-      sql: ${TABLE}.zip1 ;;
+      sql: LPAD(CAST(${TABLE}.zip1 AS VARCHAR), 5, '0') ;;
       suggestable: no
     }
 
@@ -37,7 +37,7 @@ view: rs_zcta_distances {
       view_label: "Geography"
       group_label: "ZIP Radii"
       type: zipcode
-      sql: ${TABLE}.zip2 ;;
+      sql: LPAD(CAST(${TABLE}.zip2 AS VARCHAR), 5, '0') ;;
       hidden: yes
     }
   }
