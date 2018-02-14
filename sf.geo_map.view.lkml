@@ -13,28 +13,28 @@ view: sf_logrecno_bg_map {
         blkgrp,
         SUBSTR(geo.geoid, 8, 11) as geoid11,
         geo.geoid,
-        CASE
+        trim(CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_SUBSTR(name, '^[^,]*, [^,]*, ([^,]*)')
+          THEN SPLIT_PART(name, ',', 3)
           WHEN sumlevel = '150'
-          THEN REGEXP_SUBSTR(name, '^[^,]*, [^,]*, [^,]*, ([^,]*)')
-        END as state_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 4)
+        END) as state_name,
+        trim(CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_SUBSTR(name, '^[^,]*, ([^,]*), [^,]*')
+          THEN SPLIT_PART(name, ',', 2)
           WHEN sumlevel = '150'
-          THEN REGEXP_SUBSTR(name, '^[^,]*, [^,]*, ([^,]*), [^,]*')
-        END as county_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 3)
+        END) as county_name,
+        trim(CASE
           WHEN sumlevel = '140'
-          THEN REGEXP_SUBSTR(name, '^([^,]*), [^,]*, [^,]*')
+          THEN SPLIT_PART(name, ',', 1)
           WHEN sumlevel = '150'
-          THEN REGEXP_SUBSTR(name, '^[^,]*, ([^,]*), [^,]*, [^,]*')
-        END as tract_name,
-        CASE
+          THEN SPLIT_PART(name, ',', 2)
+        END) as tract_name,
+        trim(CASE
           WHEN sumlevel = '150'
-          THEN REGEXP_SUBSTR(name, '^([^,]*), [^,]*, [^,]*, [^,]*')
-        END as block_group_name,
+          THEN SPLIT_PART(name, ',', 1)
+        END) as block_group_name,
         CASE WHEN geo.SUMLEVEL = '150' THEN bg.INTPTLAT END as latitude,
         CASE WHEN geo.SUMLEVEL = '150' THEN bg.INTPTLON END as longitude,
         SUM(COALESCE(bg.ALAND, tr.ALAND) * 0.000000386102159) AS square_miles_land,
@@ -109,7 +109,7 @@ view: sf_logrecno_bg_map {
 
   dimension: county_name {
     group_label: "County"
-    sql: CONCAT(${TABLE}.county_name, ', ', ${state_name});;
+    sql: CONCAT(${TABLE}.county_name, CONCAT(', ', ${state_name}));;
     link: {
       url: "https://maps.google.com?q={{value}}"
       label: "Google Maps"
@@ -134,7 +134,7 @@ view: sf_logrecno_bg_map {
   }
 
   dimension: tract_name {
-    sql: CONCAT(${TABLE}.tract_name, ', ', ${county_name});;
+    sql: CONCAT(${TABLE}.tract_name, CONCAT(', ', ${county_name}));;
     group_label: "Tract"
     link: {
       url: "https://google.com?q={{value}}"
@@ -164,7 +164,7 @@ view: sf_logrecno_bg_map {
   }
 
   dimension: block_group_name {
-    sql: CONCAT(${TABLE}.block_group_name, ', ', ${tract_name}) ;;
+    sql: CONCAT(${TABLE}.block_group_name, CONCAT(', ', ${tract_name})) ;;
     group_label: "Block Group"
     suggest_persist_for: "120 hours"
   }
