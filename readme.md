@@ -18,13 +18,13 @@ Note: *Our DDL statments follow Amazon Redshift syntax. You may need to adjust d
 
 ```
 CREATE TABLE zcta_distances(
-   zip1        INTEGER  PRIMARY KEY
-  ,zip2        INTEGER
+   zip1        VARCHAR  PRIMARY KEY
+  ,zip2        VARCHAR
   ,mi_to_zcta5 NUMERIC(16,13)
 );
 
 CREATE TABLE zcta_to_tract_w_state(
-   ZCTA5              INTEGER
+   ZCTA5              VARCHAR
   ,STATE              VARCHAR(30)
   ,COUNTY             VARCHAR(3)
   ,TRACT              BIGINT
@@ -111,7 +111,7 @@ CREATE TABLE geo2015(
   ,SLDL      VARCHAR(30)
   ,BLANK2    VARCHAR(30)
   ,BLANK3    VARCHAR(30)
-  ,ZCTA5     INTEGER
+  ,ZCTA5     VARCHAR
   ,SUBMCD    VARCHAR(30)
   ,SDELM     VARCHAR(30)
   ,SDSEC     VARCHAR(30)
@@ -130,18 +130,18 @@ CREATE TABLE geo2015(
 );
 
 CREATE TABLE block_group_attribs(
-   STATEFP      INTEGER
-   ,COUNTYFP    INTEGER
-   ,TRACTCE     INTEGER
-   ,BLKGRPCE    INTEGER
+   STATEFP      VARCHAR(30)
+   ,COUNTYFP    VARCHAR(3)
+   ,TRACTCE     VARCHAR(30)
+   ,BLKGRPCE    VARCHAR(30)
    ,GEOID       BIGINT
-   ,NAMELSAD    VARCHAR
-   ,MTFCC       VARCHAR
+   ,NAMELSAD    VARCHAR(30)
+   ,MTFCC       VARCHAR(50)
    ,FUNCSTAT    VARCHAR(2)
    ,ALAND       BIGINT
    ,AWATER      BIGINT
-   ,INTPTLAT    DECIMAL
-   ,INTPTLON    DECIMAL
+   ,INTPTLAT    FLOAT
+   ,INTPTLON    FLOAT
 );
 ```
 
