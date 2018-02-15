@@ -3,7 +3,7 @@ view: rs_zcta_distances {
   derived_table: {
     sql: SELECT *
         FROM
-          datablocks_spectrum.zcta_distances
+          acs.zcta_distances
         WHERE
           LPAD(CAST(zip1 AS VARCHAR),5, '0') = LPAD(CAST({% parameter zcta_distances.zip1 %} AS VARCHAR), 5, '0')
         UNION ALL

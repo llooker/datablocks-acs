@@ -1,8 +1,8 @@
 view: rs_block_group_facts {
-  sql_table_name: datablocks_spectrum.fast_facts ;;
+  sql_table_name: acs.fast_facts ;;
 
   dimension: logrecno_bg_map_block_group {
-    hidden: no
+    hidden: yes
     type: number
     sql: ${TABLE}.logrecno_bg_map_block_group ;;
     primary_key: yes
