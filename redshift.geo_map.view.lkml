@@ -156,9 +156,7 @@ view: rs_logrecno_bg_map {
     # Block Group
 
     dimension: block_group {
-      type: number
-      sql: SUBSTRING(${TABLE}.geoid, 8, 12)::bigint ;;
-      value_format_name: id
+      sql: SUBSTRING(${TABLE}.geoid, 8, 12) ;;
       group_label: "Block Group"
       label: "Block Group Geo Code"
       map_layer_name: block_group
